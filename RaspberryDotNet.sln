@@ -8,8 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		Directory.Build.props = Directory.Build.props
 		Analyzers.ruleset = Analyzers.ruleset
+		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		LICENSE = LICENSE
 		RaspberryDotNet.sln.DotSettings = RaspberryDotNet.sln.DotSettings
@@ -20,11 +20,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{1C8C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{40510718-68B3-40AB-AD0A-63ED593F021B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaspberryDotNet.Blinkt", "RaspberryDotNet.Blinkt\RaspberryDotNet.Blinkt.csproj", "{E42486B9-45E6-4AD5-BF09-16EE6D2DD622}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryDotNet.Blinkt", "RaspberryDotNet.Blinkt\RaspberryDotNet.Blinkt.csproj", "{E42486B9-45E6-4AD5-BF09-16EE6D2DD622}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Blinkt", "Example.Blinkt\Example.Blinkt.csproj", "{A2D62118-5E94-4F20-957C-C9EB86C85160}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Blinkt", "Example.Blinkt\Example.Blinkt.csproj", "{A2D62118-5E94-4F20-957C-C9EB86C85160}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Xinput", "Example.Xinput\Example.Xinput.csproj", "{309EB83F-78F9-4567-9333-8E1C11824671}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Xinput", "Example.Xinput\Example.Xinput.csproj", "{309EB83F-78F9-4567-9333-8E1C11824671}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.TuringSmartScreen", "Example.TuringSmartScreen\Example.TuringSmartScreen.csproj", "{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{309EB83F-78F9-4567-9333-8E1C11824671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{309EB83F-78F9-4567-9333-8E1C11824671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{309EB83F-78F9-4567-9333-8E1C11824671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{E42486B9-45E6-4AD5-BF09-16EE6D2DD622} = {1C8C60E5-8562-404E-A726-DEAFD38E16E3}
 		{A2D62118-5E94-4F20-957C-C9EB86C85160} = {40510718-68B3-40AB-AD0A-63ED593F021B}
 		{309EB83F-78F9-4567-9333-8E1C11824671} = {40510718-68B3-40AB-AD0A-63ED593F021B}
+		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778} = {40510718-68B3-40AB-AD0A-63ED593F021B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE703A9F-FD39-4E44-80B6-0BA30253067B}
