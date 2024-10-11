@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Xinput", "Example.X
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.TuringSmartScreen", "Example.TuringSmartScreen\Example.TuringSmartScreen.csproj", "{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.SenseHat", "Example.SenseHat\Example.SenseHat.csproj", "{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{A2D62118-5E94-4F20-957C-C9EB86C85160} = {40510718-68B3-40AB-AD0A-63ED593F021B}
 		{309EB83F-78F9-4567-9333-8E1C11824671} = {40510718-68B3-40AB-AD0A-63ED593F021B}
 		{1D8D0AEF-1108-4C98-A3A5-5728F2BC7778} = {40510718-68B3-40AB-AD0A-63ED593F021B}
+		{033BF4DB-6F51-4C9C-92C5-766D4A6D38F5} = {40510718-68B3-40AB-AD0A-63ED593F021B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE703A9F-FD39-4E44-80B6-0BA30253067B}
