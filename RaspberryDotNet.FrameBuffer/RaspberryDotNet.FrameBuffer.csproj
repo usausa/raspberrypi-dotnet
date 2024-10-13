@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>RaspberryDotNet.FrameBuffer</PackageId>
+    <Title>RaspberryDotNet.FrameBuffer</Title>
+    <Description>Library for Raspberry Pi.</Description>
+    <PackageTags>raspberrypi</PackageTags>
+  </PropertyGroup>
+
+</Project>
