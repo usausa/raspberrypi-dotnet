@@ -2,9 +2,9 @@ namespace RaspberryDotNet.FrameBuffer;
 
 using System.Runtime.CompilerServices;
 
-public sealed class PixelBufferBgr353 : PixelBuffer
+public sealed class PixelBufferBgr565 : PixelBuffer
 {
-    public PixelBufferBgr353(int width, int height)
+    public PixelBufferBgr565(int width, int height)
         : base(new byte[width * height * 2], width, height)
     {
     }
