@@ -15,9 +15,7 @@ public sealed class BlinktController : IDisposable
 
     private readonly uint[] buffer = new uint[LedCount];
 
-    private bool opened;
-
-    public bool IsOpen => opened;
+    public bool IsOpen { get; private set; }
 
     public void Dispose()
     {
@@ -43,7 +41,7 @@ public sealed class BlinktController : IDisposable
 
         Clear();
 
-        opened = true;
+        IsOpen = true;
     }
 
     public void Close()
@@ -51,7 +49,7 @@ public sealed class BlinktController : IDisposable
         controller.ClosePin(MasterOutSlaveIn);
         controller.ClosePin(SerialClock);
 
-        opened = false;
+        IsOpen = false;
     }
 
     public void Clear()
