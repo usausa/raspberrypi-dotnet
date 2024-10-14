@@ -17,9 +17,11 @@ public sealed class BlinktController : IDisposable
 
     private bool opened;
 
+    public bool IsOpen => opened;
+
     public void Dispose()
     {
-        if (opened)
+        if (IsOpen)
         {
             Close();
         }
@@ -29,7 +31,7 @@ public sealed class BlinktController : IDisposable
 
     public void Open()
     {
-        if (opened)
+        if (IsOpen)
         {
             return;
         }
@@ -70,7 +72,7 @@ public sealed class BlinktController : IDisposable
 
     public void Show()
     {
-        if (!opened)
+        if (!IsOpen)
         {
             return;
         }
