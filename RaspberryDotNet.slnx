@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Analyzers.ruleset" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="LICENSE" />
+    <File Path="RaspberryDotNet.sln.DotSettings" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Library/">
+    <Project Path="RaspberryDotNet.Blinkt/RaspberryDotNet.Blinkt.csproj" />
+    <Project Path="RaspberryDotNet.FrameBuffer/RaspberryDotNet.FrameBuffer.csproj" />
+  </Folder>
+  <Folder Name="/Example/">
+    <Project Path="Example.Blinkt/Example.Blinkt.csproj" />
+    <Project Path="Example.BuildHat/Example.BuildHat.csproj" />
+    <Project Path="Example.FrameBuffer/Example.FrameBuffer.csproj" />
+    <Project Path="Example.SenseHat/Example.SenseHat.csproj" />
+    <Project Path="Example.TuringSmartScreen/Example.TuringSmartScreen.csproj" />
+    <Project Path="Example.Xinput/Example.Xinput.csproj" />
+    <Project Path="WorkBuildHat/WorkBuildHat.csproj" />
+  </Folder>
+</Solution>
