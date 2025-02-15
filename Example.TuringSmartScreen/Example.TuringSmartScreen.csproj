@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.9" />
-    <PackageReference Include="TuringSmartScreenLib" Version="3.1.0" />
-    <PackageReference Include="TuringSmartScreenLib.Helpers.SkiaSharp" Version="3.1.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.1" />
+    <PackageReference Include="TuringSmartScreenLib" Version="4.0.0" />
+    <PackageReference Include="TuringSmartScreenLib.Helpers.SkiaSharp" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
