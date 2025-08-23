@@ -41,3 +41,5 @@ Console.WriteLine("----------------------------------------");
 Console.WriteLine();
 
 motor.MoveForSeconds(5);
+
+Console.ReadLine();

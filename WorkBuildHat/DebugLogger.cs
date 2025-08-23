@@ -1,3 +1,4 @@
+#pragma warning disable IDE0130
 using Microsoft.Extensions.Logging;
 
 internal sealed class DebugLogger : ILogger
@@ -10,13 +11,6 @@ internal sealed class DebugLogger : ILogger
         {
             // Do nothing
         }
-    }
-
-    private readonly string name;
-
-    public DebugLogger(string name)
-    {
-        this.name = name;
     }
 
     public bool IsEnabled(LogLevel logLevel)
@@ -67,6 +61,6 @@ internal sealed class DebugLoggerFactory : ILoggerFactory
 
     public ILogger CreateLogger(string categoryName)
     {
-        return new DebugLogger(categoryName);
+        return new DebugLogger();
     }
 }
