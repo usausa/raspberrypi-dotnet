@@ -1,4 +1,6 @@
 #pragma warning disable IDE0130
+namespace Helper;
+
 using Microsoft.Extensions.Logging;
 
 internal sealed class DebugLogger : ILogger
