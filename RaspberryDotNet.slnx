@@ -22,5 +22,6 @@
     <Project Path="Example.TuringSmartScreen/Example.TuringSmartScreen.csproj" />
     <Project Path="Example.Xinput/Example.Xinput.csproj" />
     <Project Path="WorkBuildHat/WorkBuildHat.csproj" />
+    <Project Path="WorkBuildHat2/WorkBuildHat2.csproj" Id="4c01241e-71a9-4a5f-9ae6-802330c4d6a1" />
   </Folder>
 </Solution>
