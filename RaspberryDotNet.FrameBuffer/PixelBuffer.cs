@@ -28,7 +28,7 @@ public abstract class PixelBuffer
         {
             for (var x = 0; x < Width; x++)
             {
-                SetPixel(x, y, 0, 0, 0);
+                SetPixel(x, y, r, g, b);
             }
         }
     }
