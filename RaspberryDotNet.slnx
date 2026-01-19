@@ -20,6 +20,7 @@
     <Project Path="Example.BuildHat/Example.BuildHat.csproj" />
     <Project Path="Example.FrameBuffer/Example.FrameBuffer.csproj" />
     <Project Path="Example.Gpio/Example.Gpio.csproj" Id="25f9b2df-09b3-45af-8a8d-5c9a0c06d122" />
+    <Project Path="Example.I2c/Example.I2c.csproj" Id="fa9dab15-e55e-44f0-b722-471be9a303a6" />
     <Project Path="Example.SenseHat/Example.SenseHat.csproj" />
     <Project Path="Example.TuringSmartScreen/Example.TuringSmartScreen.csproj" />
     <Project Path="Example.Xinput/Example.Xinput.csproj" />
