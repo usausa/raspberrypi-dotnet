@@ -15,6 +15,7 @@
     <Project Path="RaspberryDotNet.FrameBuffer/RaspberryDotNet.FrameBuffer.csproj" />
   </Folder>
   <Folder Name="/Example/">
+    <Project Path="Example.Bindings.Env3/Example.Bindings.Env3.csproj" Id="ba1455ac-fd13-4b44-8499-3a5c4ae247ff" />
     <Project Path="Example.Blinkt/Example.Blinkt.csproj" />
     <Project Path="Example.BuildHat/Example.BuildHat.csproj" />
     <Project Path="Example.FrameBuffer/Example.FrameBuffer.csproj" />
