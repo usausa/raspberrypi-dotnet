@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.5.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>RaspberryDotNet.SystemInfo</PackageId>
+    <Title>RaspberryDotNet.SystemInfo</Title>
+    <Description>Library for Raspberry Pi.</Description>
+    <PackageTags>raspberrypi system vcio</PackageTags>
+  </PropertyGroup>
+
+</Project>

@@ -13,6 +13,7 @@
   <Folder Name="/Library/">
     <Project Path="RaspberryDotNet.Blinkt/RaspberryDotNet.Blinkt.csproj" />
     <Project Path="RaspberryDotNet.FrameBuffer/RaspberryDotNet.FrameBuffer.csproj" />
+    <Project Path="RaspberryDotNet.SystemInfo/RaspberryDotNet.SystemInfo.csproj" Id="b1c7feda-5fca-4d08-8693-ebff50cf4e87" />
   </Folder>
   <Folder Name="/Example/">
     <Project Path="Example.Bindings.Env3/Example.Bindings.Env3.csproj" Id="ba1455ac-fd13-4b44-8499-3a5c4ae247ff" />
