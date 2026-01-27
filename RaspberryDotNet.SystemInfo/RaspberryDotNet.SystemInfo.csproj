@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.5.0</Version>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageId>RaspberryDotNet.SystemInfo</PackageId>
     <Title>RaspberryDotNet.SystemInfo</Title>
     <Description>Library for Raspberry Pi.</Description>
