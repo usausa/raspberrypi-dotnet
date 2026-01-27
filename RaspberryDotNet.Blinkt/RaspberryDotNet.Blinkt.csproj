@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Version>0.5.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>RaspberryDotNet.Blinkt</PackageId>
     <Title>RaspberryDotNet.Blinkt</Title>
     <Description>Library for Raspberry Pi.</Description>
