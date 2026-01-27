@@ -116,7 +116,7 @@ public sealed unsafe class Vcio : IDisposable
         return microVolts / 1_000_000.0;
     }
 
-    public ThrottledFlags? ReadThrottled()
+    public ThrottledFlags ReadThrottled()
     {
         var buf = stackalloc uint[7];
         buf[0] = 7u * 4u;
@@ -129,7 +129,7 @@ public sealed unsafe class Vcio : IDisposable
 
         if (!MailboxProperty(buf))
         {
-            return null;
+            return ThrottledFlags.Unknown;
         }
 
         return (ThrottledFlags)buf[5];
