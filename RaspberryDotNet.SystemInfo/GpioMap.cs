@@ -69,7 +69,7 @@ public sealed unsafe class GpioMap : IDisposable
 
     public IReadOnlyList<GpioSocPinState> ReadSocBanks(int start = 0, int end = 27)
     {
-        if (IsOpen)
+        if (!IsOpen)
         {
             throw new InvalidOperationException("GPIO map is not open.");
         }
@@ -91,7 +91,7 @@ public sealed unsafe class GpioMap : IDisposable
 
     public IReadOnlyList<GpioHeaderPinState> ReadHeaderGpioPins()
     {
-        if (IsOpen)
+        if (!IsOpen)
         {
             throw new InvalidOperationException("GPIO map is not open.");
         }
