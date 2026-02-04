@@ -1,44 +1,17 @@
-#pragma warning disable CA1308
-using RaspberryDotNet.SystemInfo;
+using Example.SystemInfo;
 
-using var vcio = new Vcio();
-vcio.Open();
+using Smart.CommandLine.Hosting;
 
-// Temperature
-var temp = vcio.ReadTemperature();
-if (!Double.IsNaN(temp))
+var builder = CommandHost.CreateBuilder(args);
+builder.ConfigureCommands(commands =>
 {
-    Console.WriteLine($"temp={temp:0.0}'C");
-}
-
-// Clock frequency
-foreach (var clock in Enum.GetValues<ClockType>())
-{
-    var frequency = vcio.ReadFrequency(clock, measured: true);
-    if (Double.IsNaN(frequency))
+    commands.ConfigureRootCommand(root =>
     {
-        frequency = vcio.ReadFrequency(clock, measured: false);
-    }
+        root.WithDescription("SystemInfo example");
+    });
 
-    if (!Double.IsNaN(frequency))
-    {
-        Console.WriteLine($"frequency[{clock.ToString().ToLowerInvariant()}]={frequency:0}");
-    }
-}
+    commands.AddCommands();
+});
 
-// Voltage
-foreach (var voltage in Enum.GetValues<VoltageType>())
-{
-    var volt = vcio.ReadVoltage(voltage);
-    if (!Double.IsNaN(volt))
-    {
-        Console.WriteLine($"volt[{voltage.ToString().ToLowerInvariant()}]={volt:0.0000}V");
-    }
-}
-
-// Throttled
-var throttled = vcio.ReadThrottled();
-if (throttled != ThrottledFlags.Unknown)
-{
-    Console.WriteLine($"throttled={throttled}");
-}
+var host = builder.Build();
+return await host.RunAsync();
