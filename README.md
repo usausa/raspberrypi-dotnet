@@ -1,6 +1,10 @@
-# raspberrypi-dotnet
+# Raspberry Pi platform library for .NET
 
-# RaspberryDotNet.SystemInfo
+|Library|NuGet|
+|:----|:----|
+|RaspberryDotNet.SystemInfo|[![NuGet](https://img.shields.io/nuget/v/RaspberryDotNet.SystemInfo.svg)](https://www.nuget.org/packages/RaspberryDotNet.SystemInfo)|
+
+# 🖥RaspberryDotNet.SystemInfo
 
 ## VCIO
 
