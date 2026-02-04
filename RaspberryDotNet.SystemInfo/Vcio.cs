@@ -12,6 +12,15 @@ public sealed unsafe class Vcio : IDisposable
 
     public static bool IsSupported() => File.Exists(DevicePath);
 
+    //------------------------------------------------------------------------
+    // Open/Close
+    //------------------------------------------------------------------------
+
+    public void Dispose()
+    {
+        Close();
+    }
+
     public void Open()
     {
         if (IsOpen)
@@ -31,16 +40,15 @@ public sealed unsafe class Vcio : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Close();
-    }
+    //------------------------------------------------------------------------
+    // Helper
+    //------------------------------------------------------------------------
 
     private bool MailboxProperty(void* buffer)
     {
         if (!IsOpen)
         {
-            return false;
+            throw new InvalidOperationException("VCIO is not open.");
         }
 
         var ret = ioctl(fd, IOCTL_MBOX_PROPERTY, (IntPtr)buffer);
@@ -53,6 +61,10 @@ public sealed unsafe class Vcio : IDisposable
         var buf = (uint*)buffer;
         return (buf[1] & 0x8000_0000u) != 0;
     }
+
+    //------------------------------------------------------------------------
+    // Readers
+    //------------------------------------------------------------------------
 
     public double ReadTemperature()
     {

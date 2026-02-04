@@ -16,7 +16,15 @@ internal static class NativeMethods
     // Const
     //------------------------------------------------------------------------
 
+    public const int O_RDONLY = 0;
     public const int O_RDWR = 0x0002;
+
+    // mmap
+
+    public const int PROT_READ = 0x1;
+    public const int MAP_SHARED = 0x01;
+
+    public static readonly IntPtr MAP_FAILED = new(-1);
 
     // Ioctl
 
@@ -94,6 +102,12 @@ internal static class NativeMethods
 
     [DllImport("libc", SetLastError = true)]
     public static extern int close(int fd);
+
+    [DllImport("libc", SetLastError = true)]
+    internal static extern IntPtr mmap(IntPtr addr, UIntPtr length, int prot, int flags, int fd, IntPtr offset);
+
+    [DllImport("libc", SetLastError = true)]
+    internal static extern int munmap(IntPtr addr, UIntPtr length);
 
     [DllImport("libc", SetLastError = true)]
     public static extern int ioctl(int fd, ulong request, IntPtr argp);
