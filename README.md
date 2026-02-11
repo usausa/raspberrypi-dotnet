@@ -52,6 +52,10 @@ if (throttled != ThrottledFlags.Unknown)
 }
 ```
 
+### Link
+
+* [Prometheus Exporter alternative](https://github.com/usausa/prometheus-exporter-alternative)
+
 ## GPIO
 
 ```csharp
