@@ -70,7 +70,14 @@ foreach (var p in gpio.ReadHeaderGpioPins().OrderBy(x => x.PhysicalPin))
 }
 ```
 
-# PIN memo
+# 🌐Link
+
+- [MacDotNet](https://github.com/usausa/mac-dotnet)
+- [LinuxDotNet](https://github.com/usausa/linux-dotnet)
+- [RaspberryDotNet](https://github.com/usausa/raspberrypi-dotnet)
+- [Disk information library](https://github.com/usausa/hardwareinfo-disk)
+
+# 🔢PIN memo
 
 |Pin|Signal|BCM(GPIO)|
 |:----|:----|:----|
