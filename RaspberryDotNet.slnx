@@ -15,20 +15,20 @@
   <Folder Name="/Library/">
     <Project Path="RaspberryDotNet.Blinkt/RaspberryDotNet.Blinkt.csproj" />
     <Project Path="RaspberryDotNet.FrameBuffer/RaspberryDotNet.FrameBuffer.csproj" />
-    <Project Path="RaspberryDotNet.SystemInfo/RaspberryDotNet.SystemInfo.csproj" Id="b1c7feda-5fca-4d08-8693-ebff50cf4e87" />
+    <Project Path="RaspberryDotNet.SystemInfo/RaspberryDotNet.SystemInfo.csproj" />
   </Folder>
   <Folder Name="/Example/">
-    <Project Path="Example.Bindings.Env3/Example.Bindings.Env3.csproj" Id="ba1455ac-fd13-4b44-8499-3a5c4ae247ff" />
+    <Project Path="Example.Bindings.Env3/Example.Bindings.Env3.csproj" />
     <Project Path="Example.Blinkt/Example.Blinkt.csproj" />
     <Project Path="Example.BuildHat/Example.BuildHat.csproj" />
     <Project Path="Example.FrameBuffer/Example.FrameBuffer.csproj" />
-    <Project Path="Example.Gpio/Example.Gpio.csproj" Id="25f9b2df-09b3-45af-8a8d-5c9a0c06d122" />
-    <Project Path="Example.I2c/Example.I2c.csproj" Id="fa9dab15-e55e-44f0-b722-471be9a303a6" />
+    <Project Path="Example.Gpio/Example.Gpio.csproj" />
+    <Project Path="Example.I2c/Example.I2c.csproj" />
     <Project Path="Example.SenseHat/Example.SenseHat.csproj" />
-    <Project Path="Example.SystemInfo/Example.SystemInfo.csproj" Id="c6e3c42c-eda3-4fb2-8815-7b9e90d24494" />
+    <Project Path="Example.SystemInfo/Example.SystemInfo.csproj" />
     <Project Path="Example.TuringSmartScreen/Example.TuringSmartScreen.csproj" />
     <Project Path="Example.Xinput/Example.Xinput.csproj" />
     <Project Path="WorkBuildHat/WorkBuildHat.csproj" />
-    <Project Path="WorkBuildHat2/WorkBuildHat2.csproj" Id="4c01241e-71a9-4a5f-9ae6-802330c4d6a1" />
+    <Project Path="WorkBuildHat2/WorkBuildHat2.csproj" />
   </Folder>
 </Solution>
