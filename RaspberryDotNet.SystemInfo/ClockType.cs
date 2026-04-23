@@ -9,7 +9,7 @@ public enum ClockType : uint
     Uart = 2,
     Arm = 3,
     Core = 4,
-    V3d = 5,
+    V3D = 5,
     H264 = 6,
     Isp = 7,
     Sdram = 8,
