@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 #pragma warning disable IDE1006
+#pragma warning disable SA1005
 #pragma warning disable CA2101
 #pragma warning disable CA5392
 #pragma warning disable CS8981
@@ -35,14 +36,14 @@ internal static class NativeMethods
     public const int IOC_NRBITS = 8;
     public const int IOC_TYPEBITS = 8;
     public const int IOC_SIZEBITS = 14;
-    public const int IOC_DIRBITS = 2;
+    //public const int IOC_DIRBITS = 2;
 
     public const int IOC_NRSHIFT = 0;
     public const int IOC_TYPESHIFT = IOC_NRSHIFT + IOC_NRBITS;          // 8
     public const int IOC_SIZESHIFT = IOC_TYPESHIFT + IOC_TYPEBITS;      // 16
     public const int IOC_DIRSHIFT = IOC_SIZESHIFT + IOC_SIZEBITS;       // 30
 
-    public const int IOC_NONE = 0;
+    //public const int IOC_NONE = 0;
     public const int IOC_WRITE = 1;
     public const int IOC_READ = 2;
 
@@ -60,8 +61,7 @@ internal static class NativeMethods
 
     // Raspberry Pi mailbox property ioctl:
 
-    public static ulong IOCTL_MBOX_PROPERTY =>
-        IOWR(100, 0, IntPtr.Size);
+    public static readonly ulong IOCTL_MBOX_PROPERTY = IOWR(100, 0, IntPtr.Size);
 
     // Property interface constants
     public const uint TAG_GET_TEMPERATURE = 0x00030006;

@@ -1,6 +1,7 @@
 namespace RaspberryDotNet.Blinkt;
 
 using System.Device.Gpio;
+using System.Runtime.CompilerServices;
 
 public sealed class BlinktController : IDisposable
 {
@@ -54,10 +55,7 @@ public sealed class BlinktController : IDisposable
 
     public void Clear()
     {
-        for (var i = 0; i < buffer.Length; i++)
-        {
-            buffer[i] = DefaultBrightness;
-        }
+        buffer.AsSpan().Fill(DefaultBrightness);
     }
 
     public void SetPixel(int led, byte red, byte green, byte blue, byte brightness = DefaultBrightness)
@@ -80,7 +78,7 @@ public sealed class BlinktController : IDisposable
         WriteByte(0);
         WriteByte(0);
 
-        foreach (var value in buffer)
+        foreach (var value in buffer.AsSpan())
         {
             WriteByte((byte)(0b11100000 | (value & 0b11111)));
             WriteByte((byte)((value >> 8) & 0xFF));
@@ -91,6 +89,7 @@ public sealed class BlinktController : IDisposable
         WriteByte(0);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void WriteByte(byte b)
     {
         for (var i = 0; i < 8; i++)
