@@ -8,10 +8,9 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 #pragma warning disable IDE1006
 #pragma warning disable SA1005
-#pragma warning disable CA2101
 #pragma warning disable CA5392
 #pragma warning disable CS8981
-internal static class NativeMethods
+internal static partial class NativeMethods
 {
     //------------------------------------------------------------------------
     // Const
@@ -97,18 +96,18 @@ internal static class NativeMethods
     //------------------------------------------------------------------------
     // Method
     //------------------------------------------------------------------------
-    [DllImport("libc", SetLastError = true)]
-    public static extern int open([MarshalAs(UnmanagedType.LPStr)] string pathname, int flags);
+    [LibraryImport("libc", StringMarshalling = StringMarshalling.Utf8, SetLastError = true)]
+    public static partial int open(string pathname, int flags);
 
-    [DllImport("libc", SetLastError = true)]
-    public static extern int close(int fd);
+    [LibraryImport("libc", SetLastError = true)]
+    public static partial int close(int fd);
 
-    [DllImport("libc", SetLastError = true)]
-    internal static extern IntPtr mmap(IntPtr addr, UIntPtr length, int prot, int flags, int fd, IntPtr offset);
+    [LibraryImport("libc", SetLastError = true)]
+    internal static partial IntPtr mmap(IntPtr addr, UIntPtr length, int prot, int flags, int fd, IntPtr offset);
 
-    [DllImport("libc", SetLastError = true)]
-    internal static extern int munmap(IntPtr addr, UIntPtr length);
+    [LibraryImport("libc", SetLastError = true)]
+    internal static partial int munmap(IntPtr addr, UIntPtr length);
 
-    [DllImport("libc", SetLastError = true)]
-    public static extern int ioctl(int fd, ulong request, IntPtr argp);
+    [LibraryImport("libc", SetLastError = true)]
+    public static partial int ioctl(int fd, ulong request, IntPtr argp);
 }
