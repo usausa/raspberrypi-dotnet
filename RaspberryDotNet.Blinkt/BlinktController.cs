@@ -89,7 +89,7 @@ public sealed class BlinktController : IDisposable
         WriteByte(0);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void WriteByte(byte b)
     {
         for (var i = 0; i < 8; i++)

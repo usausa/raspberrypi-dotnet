@@ -2,8 +2,7 @@ namespace RaspberryDotNet.SystemInfo;
 
 using static RaspberryDotNet.SystemInfo.NativeMethods;
 
-#pragma warning disable CA2216
-public sealed unsafe class GpioMap : IDisposable
+public sealed class GpioMap : IDisposable
 {
     private const string DevicePath = "/dev/gpiomem";
     private const int GpioBlockSize = 4 * 1024;
@@ -67,7 +66,7 @@ public sealed unsafe class GpioMap : IDisposable
     // Read states
     //------------------------------------------------------------------------
 
-    public IReadOnlyList<GpioSocPinState> ReadSocBanks(int start = 0, int end = 27)
+    public unsafe IReadOnlyList<GpioSocPinState> ReadSocBanks(int start = 0, int end = 27)
     {
         if (!IsOpen)
         {
@@ -89,7 +88,7 @@ public sealed unsafe class GpioMap : IDisposable
         return list;
     }
 
-    public IReadOnlyList<GpioHeaderPinState> ReadHeaderGpioPins()
+    public unsafe IReadOnlyList<GpioHeaderPinState> ReadHeaderGpioPins()
     {
         if (!IsOpen)
         {
@@ -114,10 +113,9 @@ public sealed unsafe class GpioMap : IDisposable
     // Low level register access
     //------------------------------------------------------------------------
 
-    private static uint Read32(byte* basePtr, int byteOffset)
-        => *(uint*)(basePtr + byteOffset);
+    private static unsafe uint Read32(byte* basePtr, int byteOffset) => *(uint*)(basePtr + byteOffset);
 
-    private static uint GetFsel(byte* basePtr, uint socPin)
+    private static unsafe uint GetFsel(byte* basePtr, uint socPin)
     {
         var reg = socPin / 10;
         var shift = (socPin % 10) * 3;
@@ -126,7 +124,7 @@ public sealed unsafe class GpioMap : IDisposable
         return (v >> (int)shift) & 0x7u;
     }
 
-    private static uint GetLevel(byte* basePtr, uint socPin)
+    private static unsafe uint GetLevel(byte* basePtr, uint socPin)
     {
         var off = (socPin < 32) ? 0x34 : 0x38;
         var shift = socPin % 32;

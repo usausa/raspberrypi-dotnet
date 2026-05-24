@@ -2,7 +2,7 @@ namespace RaspberryDotNet.SystemInfo;
 
 using static RaspberryDotNet.SystemInfo.NativeMethods;
 
-public sealed unsafe class Vcio : IDisposable
+public sealed class Vcio : IDisposable
 {
     private const string DevicePath = "/dev/vcio";
 
@@ -19,6 +19,7 @@ public sealed unsafe class Vcio : IDisposable
     public void Dispose()
     {
         Close();
+        GC.SuppressFinalize(this);
     }
 
     public void Open()
@@ -44,7 +45,7 @@ public sealed unsafe class Vcio : IDisposable
     // Helper
     //------------------------------------------------------------------------
 
-    private bool MailboxProperty(void* buffer)
+    private unsafe bool MailboxProperty(void* buffer)
     {
         if (!IsOpen)
         {
@@ -66,7 +67,7 @@ public sealed unsafe class Vcio : IDisposable
     // Readers
     //------------------------------------------------------------------------
 
-    public double ReadTemperature()
+    public unsafe double ReadTemperature()
     {
         var buf = stackalloc uint[8];
         buf[0] = 8u * 4u;          // total size bytes
@@ -87,7 +88,7 @@ public sealed unsafe class Vcio : IDisposable
         return milliC / 1000.0;
     }
 
-    public double ReadFrequency(ClockType clock, bool measured = true)
+    public unsafe double ReadFrequency(ClockType clock, bool measured = true)
     {
         var buf = stackalloc uint[8];
         buf[0] = 8u * 4u;
@@ -107,7 +108,7 @@ public sealed unsafe class Vcio : IDisposable
         return buf[6];
     }
 
-    public double ReadVoltage(VoltageType domain)
+    public unsafe double ReadVoltage(VoltageType domain)
     {
         var buf = stackalloc uint[8];
         buf[0] = 8u * 4u;
@@ -128,7 +129,7 @@ public sealed unsafe class Vcio : IDisposable
         return microVolts / 1_000_000.0;
     }
 
-    public ThrottledFlags ReadThrottled()
+    public unsafe ThrottledFlags ReadThrottled()
     {
         var buf = stackalloc uint[7];
         buf[0] = 7u * 4u;
