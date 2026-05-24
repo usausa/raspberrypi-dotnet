@@ -19,7 +19,6 @@ public sealed class Vcio : IDisposable
     public void Dispose()
     {
         Close();
-        GC.SuppressFinalize(this);
     }
 
     public void Open()
