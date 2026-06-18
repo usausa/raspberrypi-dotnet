@@ -47,6 +47,11 @@ public sealed class BlinktController : IDisposable
 
     public void Close()
     {
+        if (!IsOpen)
+        {
+            return;
+        }
+
         controller.ClosePin(MasterOutSlaveIn);
         controller.ClosePin(SerialClock);
 

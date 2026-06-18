@@ -21,14 +21,15 @@ public sealed class Vcio : IDisposable
         Close();
     }
 
-    public void Open()
+    public bool Open()
     {
         if (IsOpen)
         {
-            return;
+            return true;
         }
 
         fd = open(DevicePath, O_RDWR);
+        return fd >= 0;
     }
 
     public void Close()

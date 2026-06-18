@@ -25,7 +25,11 @@ public sealed class VcioCommand : ICommandHandler
     public ValueTask ExecuteAsync(CommandContext context)
     {
         using var vcio = new Vcio();
-        vcio.Open();
+        if (!vcio.Open())
+        {
+            Console.WriteLine("Failed to open /dev/vcio.");
+            return ValueTask.CompletedTask;
+        }
 
         // Temperature
         var temp = vcio.ReadTemperature();
