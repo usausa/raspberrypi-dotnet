@@ -20,11 +20,11 @@ public sealed class GpioMap : IDisposable
         Close();
     }
 
-    public void Open()
+    public bool Open()
     {
         if (IsOpen)
         {
-            return;
+            return true;
         }
 
         var fd = open(DevicePath, O_RDONLY);
@@ -43,6 +43,8 @@ public sealed class GpioMap : IDisposable
                 _ = close(fd);
             }
         }
+
+        return IsOpen;
     }
 
     public void Close()
@@ -113,7 +115,7 @@ public sealed class GpioMap : IDisposable
     // Low level register access
     //------------------------------------------------------------------------
 
-    private static unsafe uint Read32(byte* basePtr, int byteOffset) => *(uint*)(basePtr + byteOffset);
+    private static unsafe uint Read32(byte* basePtr, int byteOffset) => Volatile.Read(ref *(uint*)(basePtr + byteOffset));
 
     private static unsafe uint GetFsel(byte* basePtr, uint socPin)
     {

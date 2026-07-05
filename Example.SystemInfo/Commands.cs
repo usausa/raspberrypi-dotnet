@@ -83,7 +83,11 @@ public sealed class GpioCommand : ICommandHandler
     public ValueTask ExecuteAsync(CommandContext context)
     {
         using var gpio = new GpioMap();
-        gpio.Open();
+        if (!gpio.Open())
+        {
+            Console.WriteLine("Failed to open /dev/gpiomem.");
+            return ValueTask.CompletedTask;
+        }
 
         Console.WriteLine("PHYS  SOC  FUNC  LEVEL");
         Console.WriteLine("----  ---  ----  -----");

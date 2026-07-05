@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 public sealed class PixelBufferBgr565 : PixelBuffer
 {
     public PixelBufferBgr565(int width, int height)
-        : base(new byte[width * height * 2], width, height)
+        : base(CreateBuffer(width, height), width, height)
     {
     }
 
@@ -29,5 +29,10 @@ public sealed class PixelBufferBgr565 : PixelBuffer
         {
             MemoryMarshal.Cast<byte, ushort>(Data).Fill(rgb);
         }
+    }
+
+    private static byte[] CreateBuffer(int width, int height)
+    {
+        return new byte[checked(width * height * 2)];
     }
 }

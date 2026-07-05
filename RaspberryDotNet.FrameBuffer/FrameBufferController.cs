@@ -40,7 +40,7 @@ public sealed class FrameBufferController : IDisposable
             throw new InvalidOperationException($"Buffer size does not match framebuffer. buffer=[{Buffer.Data.Length}], framebuffer=[{expected.Value}]");
         }
 
-        stream = File.OpenWrite(name);
+        stream = new FileStream(name, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
     }
 
     private static int? ReadFrameBufferSize(string deviceName)
@@ -60,7 +60,8 @@ public sealed class FrameBufferController : IDisposable
                 Int32.TryParse(File.ReadAllText(stridePath).AsSpan().Trim(), out var stride) &&
                 (stride > 0))
             {
-                return stride * height;
+                var strideSize = (long)stride * height;
+                return strideSize <= Int32.MaxValue ? (int)strideSize : null;
             }
 
             if (!Int32.TryParse(File.ReadAllText(Path.Combine(basePath, "bits_per_pixel")).AsSpan().Trim(), out var bpp))
@@ -68,7 +69,8 @@ public sealed class FrameBufferController : IDisposable
                 return null;
             }
 
-            return width * height * bpp / 8;
+            var size = (long)width * height * bpp / 8;
+            return size <= Int32.MaxValue ? (int)size : null;
         }
         catch (IOException)
         {
@@ -86,7 +88,7 @@ public sealed class FrameBufferController : IDisposable
         stream = null;
     }
 
-    public void Update()
+    public void Update(bool flush = true)
     {
         if (stream is null)
         {
@@ -95,6 +97,9 @@ public sealed class FrameBufferController : IDisposable
 
         stream.Seek(0, SeekOrigin.Begin);
         stream.Write(Buffer.Data);
-        stream.Flush();
+        if (flush)
+        {
+            stream.Flush();
+        }
     }
 }
