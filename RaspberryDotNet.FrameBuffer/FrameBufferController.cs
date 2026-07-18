@@ -3,15 +3,20 @@ namespace RaspberryDotNet.FrameBuffer;
 using System;
 using System.IO;
 
+using static RaspberryDotNet.FrameBuffer.NativeMethods;
+
 public sealed class FrameBufferController : IDisposable
 {
     private readonly string name;
+
+    private IntPtr map = IntPtr.Zero;
+    private nuint mapLength;
 
     private Stream? stream;
 
     public PixelBuffer Buffer { get; }
 
-    public bool IsOpen => stream != null;
+    public bool IsOpen => (map != IntPtr.Zero) || (stream is not null);
 
     public FrameBufferController(string name, PixelBuffer buffer)
     {
@@ -40,7 +45,41 @@ public sealed class FrameBufferController : IDisposable
             throw new InvalidOperationException($"Buffer size does not match framebuffer. buffer=[{Buffer.Data.Length}], framebuffer=[{expected.Value}]");
         }
 
+        var length = expected ?? Buffer.Data.Length;
+        if (TryOpenMap(length))
+        {
+            return;
+        }
+
+        // Fall back to stream
         stream = new FileStream(name, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
+    }
+
+    private bool TryOpenMap(int length)
+    {
+        var fd = open(name, O_RDWR);
+        if (fd < 0)
+        {
+            return false;
+        }
+
+        try
+        {
+            var ptr = mmap(IntPtr.Zero, (nuint)length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, IntPtr.Zero);
+            if (ptr == MAP_FAILED)
+            {
+                return false;
+            }
+
+            map = ptr;
+            mapLength = (nuint)length;
+            return true;
+        }
+        finally
+        {
+            // The mapping stays valid after the descriptor is closed.
+            _ = close(fd);
+        }
     }
 
     private static int? ReadFrameBufferSize(string deviceName)
@@ -84,12 +123,26 @@ public sealed class FrameBufferController : IDisposable
 
     public void Close()
     {
+        if (map != IntPtr.Zero)
+        {
+            _ = munmap(map, mapLength);
+            map = IntPtr.Zero;
+            mapLength = 0;
+        }
+
         stream?.Dispose();
         stream = null;
     }
 
-    public void Update(bool flush = true)
+    public unsafe void Update(bool flush = true)
     {
+        if (map != IntPtr.Zero)
+        {
+            // Direct memcpy into the mapped framebuffer; no syscall per frame.
+            Buffer.Data.CopyTo(new Span<byte>((void*)map, (int)mapLength));
+            return;
+        }
+
         if (stream is null)
         {
             return;

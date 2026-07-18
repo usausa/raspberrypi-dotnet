@@ -49,10 +49,11 @@ internal static partial class NativeMethods
     public static ulong IOC(int dir, int type, int nr, int size)
     {
         // request is unsigned long; on 64-bit it's 64-bit
-        return (ulong)((dir << IOC_DIRSHIFT) |
-                       (type << IOC_TYPESHIFT) |
-                       (nr << IOC_NRSHIFT) |
-                       (size << IOC_SIZESHIFT));
+        // Shift as unsigned so that dir << 30 is not sign-extended into the upper 32 bits when the uint result is widened (zero-extended) to ulong
+        return ((uint)dir << IOC_DIRSHIFT) |
+               ((uint)type << IOC_TYPESHIFT) |
+               ((uint)nr << IOC_NRSHIFT) |
+               ((uint)size << IOC_SIZESHIFT);
     }
 
     public static ulong IOWR(int type, int nr, int size) =>

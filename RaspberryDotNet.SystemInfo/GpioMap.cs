@@ -1,15 +1,30 @@
+// ReSharper disable CommentTypo
 namespace RaspberryDotNet.SystemInfo;
 
 using static RaspberryDotNet.SystemInfo.NativeMethods;
 
 public sealed class GpioMap : IDisposable
 {
-    private const string DevicePath = "/dev/gpiomem";
+    // BCM2835-2711 (Pi 4 and earlier)
+    private const string DevicePathBcm = "/dev/gpiomem";
+
+    // BCM2712 + RP1 (Pi 5 family)
+    private const string DevicePathRp1 = "/dev/gpiomem0";
+
     private const int GpioBlockSize = 4 * 1024;
 
+    // RP1 IO_BANK0 register layout (see ReadRp1Pin for sources / caveats).
+    private const uint Rp1FuncSelMask = 0x1f;   // CTRL bits [4:0]
+    private const uint Rp1FuncSelSysRio = 5;    // FUNCSEL value that selects SYS_RIO (software GPIO)
+    private const int Rp1StatusInFromPadBit = 17; // STATUS.INFROMPAD: input level at the pad
+    private const int Rp1StatusOeToPadBit = 13;   // STATUS.OETOPAD: output enable to the pad
+
     private IntPtr map = IntPtr.Zero;
+    private bool isRp1;
 
     public bool IsOpen => map != IntPtr.Zero;
+
+    public static bool IsSupported() => File.Exists(DevicePathRp1) || File.Exists(DevicePathBcm);
 
     //------------------------------------------------------------------------
     // Open/Close
@@ -27,7 +42,10 @@ public sealed class GpioMap : IDisposable
             return true;
         }
 
-        var fd = open(DevicePath, O_RDONLY);
+        isRp1 = IsRp1Model();
+        var devicePath = isRp1 ? DevicePathRp1 : DevicePathBcm;
+
+        var fd = open(devicePath, O_RDONLY);
         if (fd >= 0)
         {
             try
@@ -64,6 +82,34 @@ public sealed class GpioMap : IDisposable
         }
     }
 
+    private static bool IsRp1Model()
+    {
+        try
+        {
+            if (File.Exists("/proc/device-tree/compatible") &&
+                File.ReadAllText("/proc/device-tree/compatible").Contains("bcm2712", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            if (File.Exists("/proc/device-tree/model") &&
+                File.ReadAllText("/proc/device-tree/model").Contains("Raspberry Pi 5", StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+        catch (IOException)
+        {
+            // Fall back to the BCM
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Fall back to the BCM
+        }
+
+        return false;
+    }
+
     //------------------------------------------------------------------------
     // Read states
     //------------------------------------------------------------------------
@@ -80,11 +126,9 @@ public sealed class GpioMap : IDisposable
         var basePtr = (byte*)map.ToPointer();
         for (var soc = start; soc <= end; soc++)
         {
-            var fsel = GetFsel(basePtr, (uint)soc);
-            var lev = GetLevel(basePtr, (uint)soc);
-            var func = (fsel <= 7) ? (GpioFunction)fsel : GpioFunction.Unknown;
+            var (func, level) = ReadPin(basePtr, (uint)soc);
 
-            list.Add(new GpioSocPinState(soc, func, (int)lev));
+            list.Add(new GpioSocPinState(soc, func, level));
         }
 
         return list;
@@ -102,20 +146,30 @@ public sealed class GpioMap : IDisposable
         var basePtr = (byte*)map.ToPointer();
         foreach (var port in HeaderGpioPorts)
         {
-            var fsel = GetFsel(basePtr, (uint)port.SocPin);
-            var lev = GetLevel(basePtr, (uint)port.SocPin);
-            var func = (fsel <= 7) ? (GpioFunction)fsel : GpioFunction.Unknown;
+            var (func, level) = ReadPin(basePtr, (uint)port.SocPin);
 
-            list.Add(new GpioHeaderPinState(port.PhysicalPin, port.SocPin, func, (int)lev));
+            list.Add(new GpioHeaderPinState(port.PhysicalPin, port.SocPin, func, level));
         }
 
         return list;
     }
-    //------------------------------------------------------------------------
-    // Low level register access
-    //------------------------------------------------------------------------
 
-    private static unsafe uint Read32(byte* basePtr, int byteOffset) => Volatile.Read(ref *(uint*)(basePtr + byteOffset));
+    private unsafe (GpioFunction Function, int Level) ReadPin(byte* basePtr, uint socPin)
+    {
+        if (isRp1)
+        {
+            return ReadRp1Pin(basePtr, socPin);
+        }
+
+        var fsel = GetFsel(basePtr, socPin);
+        var lev = GetLevel(basePtr, socPin);
+        var func = (fsel <= 7) ? (GpioFunction)fsel : GpioFunction.Unknown;
+        return (func, (int)lev);
+    }
+
+    //------------------------------------------------------------------------
+    // Low level register access (BCM2835-2711)
+    //------------------------------------------------------------------------
 
     private static unsafe uint GetFsel(byte* basePtr, uint socPin)
     {
@@ -133,6 +187,33 @@ public sealed class GpioMap : IDisposable
         var v = Read32(basePtr, off);
         return (v >> (int)shift) & 1u;
     }
+
+    //------------------------------------------------------------------------
+    // Low level register access (RP1 / Pi 5 IO_BANK0)
+    //------------------------------------------------------------------------
+
+    private static unsafe (GpioFunction Function, int Level) ReadRp1Pin(byte* basePtr, uint socPin)
+    {
+        var status = Read32(basePtr, (int)(socPin * 8));
+        var ctrl = Read32(basePtr, (int)((socPin * 8) + 4));
+
+        var level = (int)((status >> Rp1StatusInFromPadBit) & 1u);
+        var funcSel = ctrl & Rp1FuncSelMask;
+
+        if (funcSel != Rp1FuncSelSysRio)
+        {
+            return (GpioFunction.Unknown, level);
+        }
+
+        var func = ((status >> Rp1StatusOeToPadBit) & 1u) != 0 ? GpioFunction.Out : GpioFunction.In;
+        return (func, level);
+    }
+
+    //------------------------------------------------------------------------
+    // Helper
+    //------------------------------------------------------------------------
+
+    private static unsafe uint Read32(byte* basePtr, int byteOffset) => Volatile.Read(ref *(uint*)(basePtr + byteOffset));
 
     //------------------------------------------------------------------------
     // Header GPIO mapping
