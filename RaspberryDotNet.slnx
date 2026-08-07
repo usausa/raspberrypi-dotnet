@@ -25,7 +25,7 @@
     <Project Path="Example.Gpio/Example.Gpio.csproj" />
     <Project Path="Example.I2c/Example.I2c.csproj" />
     <Project Path="Example.SenseHat/Example.SenseHat.csproj" />
-    <Project Path="Example.SystemInfo/Example.SystemInfo.csproj" />
+    <Project Path="Example.SystemInfo/Example.SystemInfo.csproj" DefaultStartup="true" />
     <Project Path="Example.TuringSmartScreen/Example.TuringSmartScreen.csproj" />
     <Project Path="Example.Xinput/Example.Xinput.csproj" />
     <Project Path="WorkBuildHat/WorkBuildHat.csproj" />
