@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 #pragma warning disable IDE1006
-#pragma warning disable SA1005
+#pragma warning disable SA1203
 #pragma warning disable CA5392
 #pragma warning disable CS8981
 internal static partial class NativeMethods

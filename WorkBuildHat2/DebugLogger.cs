@@ -36,7 +36,7 @@ internal sealed class DebugLogger : ILogger
 
         var message = formatter(state, exception);
 
-        if (string.IsNullOrEmpty(message))
+        if (String.IsNullOrEmpty(message))
         {
             return;
         }
