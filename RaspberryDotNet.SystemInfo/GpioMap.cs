@@ -114,6 +114,7 @@ public sealed class GpioMap : IDisposable
     // Read states
     //------------------------------------------------------------------------
 
+    // ReSharper disable once RedundantUnsafeContext
     public unsafe IReadOnlyList<GpioSocPinState> ReadSocBanks(int start = 0, int end = 27)
     {
         if (!IsOpen)
@@ -134,6 +135,7 @@ public sealed class GpioMap : IDisposable
         return list;
     }
 
+    // ReSharper disable once RedundantUnsafeContext
     public unsafe IReadOnlyList<GpioHeaderPinState> ReadHeaderGpioPins()
     {
         if (!IsOpen)
@@ -154,6 +156,7 @@ public sealed class GpioMap : IDisposable
         return list;
     }
 
+    // ReSharper disable once RedundantUnsafeContext
     private unsafe (GpioFunction Function, int Level) ReadPin(byte* basePtr, uint socPin)
     {
         if (isRp1)
@@ -171,6 +174,7 @@ public sealed class GpioMap : IDisposable
     // Low level register access (BCM2835-2711)
     //------------------------------------------------------------------------
 
+    // ReSharper disable once RedundantUnsafeContext
     private static unsafe uint GetFsel(byte* basePtr, uint socPin)
     {
         var reg = socPin / 10;
@@ -180,6 +184,7 @@ public sealed class GpioMap : IDisposable
         return (v >> (int)shift) & 0x7u;
     }
 
+    // ReSharper disable once RedundantUnsafeContext
     private static unsafe uint GetLevel(byte* basePtr, uint socPin)
     {
         var off = (socPin < 32) ? 0x34 : 0x38;
@@ -192,6 +197,7 @@ public sealed class GpioMap : IDisposable
     // Low level register access (RP1 / Pi 5 IO_BANK0)
     //------------------------------------------------------------------------
 
+    // ReSharper disable once RedundantUnsafeContext
     private static unsafe (GpioFunction Function, int Level) ReadRp1Pin(byte* basePtr, uint socPin)
     {
         var status = Read32(basePtr, (int)(socPin * 8));
