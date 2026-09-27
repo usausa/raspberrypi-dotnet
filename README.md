@@ -108,7 +108,7 @@ Console.WriteLine($"color={await sensor.ReadColorAsync()}, distance={await senso
 |Generic (`BuildHatPort`)|Other active devices|-|
 |Unsupported|Button and other passive devices|-|
 
-- `BuildHatPort.SelectMode` / `SelectCombi` keep the latest data in `State.Values`
+- `Select` / `SelectMode` / `SelectCombi` stream the data into `Port.State.Values`, and reads of the selected mode return the latest value immediately
 - Enable the serial port and disable the serial login shell with `raspi-config`
 - Events are raised on the receive thread
 - The firmware of [python-build-hat](https://github.com/RaspberryPiFoundation/python-build-hat) (MIT, `Firmware/LICENSE.txt`) is embedded and uploaded when needed

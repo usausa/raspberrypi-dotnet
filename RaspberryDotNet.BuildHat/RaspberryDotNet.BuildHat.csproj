@@ -18,7 +18,8 @@
     <EmbeddedResource Include="Firmware\firmware.bin" LogicalName="RaspberryDotNet.BuildHat.firmware.bin" />
     <EmbeddedResource Include="Firmware\signature.bin" LogicalName="RaspberryDotNet.BuildHat.signature.bin" />
     <EmbeddedResource Include="Firmware\version" LogicalName="RaspberryDotNet.BuildHat.version" />
-    <None Update="Firmware\LICENSE.txt" Pack="true" PackagePath="firmware\" />
+    <None Remove="Firmware\LICENSE.txt" />
+    <None Include="Firmware\LICENSE.txt" Pack="true" PackagePath="firmware\" />
   </ItemGroup>
 
   <ItemGroup>
