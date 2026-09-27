@@ -3,6 +3,7 @@
 |Library|NuGet|
 |:----|:----|
 |RaspberryDotNet.SystemInfo|[![NuGet](https://img.shields.io/nuget/v/RaspberryDotNet.SystemInfo.svg)](https://www.nuget.org/packages/RaspberryDotNet.SystemInfo)|
+|RaspberryDotNet.BuildHat|[![NuGet](https://img.shields.io/nuget/v/RaspberryDotNet.BuildHat.svg)](https://www.nuget.org/packages/RaspberryDotNet.BuildHat)|
 
 # 🖥RaspberryDotNet.SystemInfo
 
@@ -69,6 +70,48 @@ foreach (var p in gpio.ReadHeaderGpioPins().OrderBy(x => x.PhysicalPin))
     Console.WriteLine($"{p.PhysicalPin,4}  {p.SocPin,3}  {p.Function,-4}  {p.Level,5}");
 }
 ```
+
+# 🧱RaspberryDotNet.BuildHat
+
+```csharp
+using var hat = new BuildHatController();
+hat.Open();
+
+await hat.WaitForDeviceAsync(0, TimeSpan.FromSeconds(10));
+
+// Motor
+var motor = hat.GetMotor(0);
+await motor.RunForDegreesAsync(360, 30);
+await motor.RunToAbsolutePositionAsync(0, 50, BuildHatDirection.Shortest, BuildHatStopMode.Hold);
+
+// Motor pair
+var pair = hat.GetMotorPair(0, 2);
+await pair.RunForDegreesAsync(360, 30, -30);
+
+// Color & Distance Sensor
+var sensor = hat.GetColorDistanceSensor(3);
+Console.WriteLine($"color={await sensor.ReadColorAsync()}, distance={await sensor.ReadDistanceAsync()}");
+```
+
+|Support|Devices|Tested|
+|:----|:----|:----|
+|Motor|Technic Large / XL Motor, Technic Medium / Large Angular Motor, Small Angular Motor, Medium Linear Motor|✓|
+|PassiveMotor|System Medium / Train / Turntable Motor, Technic Large / XL Motor (passive)|-|
+|Light|Light|-|
+|ColorDistanceSensor|Color & Distance Sensor|✓|
+|ColorSensor|Color Sensor|-|
+|DistanceSensor|Distance Sensor|-|
+|ForceSensor|Force Sensor|-|
+|LightMatrix|3x3 Color Light Matrix|-|
+|TiltSensor|WeDo 2.0 Tilt Sensor|-|
+|MotionSensor|WeDo 2.0 Motion Sensor|-|
+|Generic (`BuildHatPort`)|Other active devices|-|
+|Unsupported|Button and other passive devices|-|
+
+- `BuildHatPort.SelectMode` / `SelectCombi` keep the latest data in `State.Values`
+- Enable the serial port and disable the serial login shell with `raspi-config`
+- Events are raised on the receive thread
+- The firmware of [python-build-hat](https://github.com/RaspberryPiFoundation/python-build-hat) (MIT, `Firmware/LICENSE.txt`) is embedded and uploaded when needed
 
 # 🌐Link
 

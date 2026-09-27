@@ -13,6 +13,7 @@
   </Folder>
   <Folder Name="/Library/">
     <Project Path="RaspberryDotNet.Blinkt/RaspberryDotNet.Blinkt.csproj" />
+    <Project Path="RaspberryDotNet.BuildHat/RaspberryDotNet.BuildHat.csproj" />
     <Project Path="RaspberryDotNet.FrameBuffer/RaspberryDotNet.FrameBuffer.csproj" />
     <Project Path="RaspberryDotNet.SystemInfo/RaspberryDotNet.SystemInfo.csproj" />
   </Folder>

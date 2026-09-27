@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Gamepad" Version="1.1.0" />
-    <PackageReference Include="Iot.Device.Bindings" Version="4.2.0" />
+    <ProjectReference Include="..\RaspberryDotNet.BuildHat\RaspberryDotNet.BuildHat.csproj" />
   </ItemGroup>
 
 </Project>

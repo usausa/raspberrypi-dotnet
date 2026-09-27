@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>RaspberryDotNet.BuildHat</PackageId>
+    <Title>RaspberryDotNet.BuildHat</Title>
+    <Description>Library for Raspberry Pi.</Description>
+    <PackageTags>raspberrypi buildhat lego</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Firmware\firmware.bin" LogicalName="RaspberryDotNet.BuildHat.firmware.bin" />
+    <EmbeddedResource Include="Firmware\signature.bin" LogicalName="RaspberryDotNet.BuildHat.signature.bin" />
+    <EmbeddedResource Include="Firmware\version" LogicalName="RaspberryDotNet.BuildHat.version" />
+    <None Update="Firmware\LICENSE.txt" Pack="true" PackagePath="firmware\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Device.Gpio" Version="4.2.0" />
+  </ItemGroup>
+
+</Project>
