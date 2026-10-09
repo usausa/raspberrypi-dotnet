@@ -10,46 +10,30 @@
 ## VCIO
 
 ```csharp
-using var vcio = new Vcio();
-vcio.Open();
+using var vcio = PlatformProvider.GetVcioMonitor();
 
 // Temperature
-var temp = vcio.ReadTemperature();
-if (!Double.IsNaN(temp))
+if (!Double.IsNaN(vcio.Temperature))
 {
-    Console.WriteLine($"temp={temp:0.0}'C");
+    Console.WriteLine($"temp={vcio.Temperature:0.0}'C");
 }
 
 // Clock frequency
-foreach (var clock in Enum.GetValues<ClockType>())
+foreach (var clock in vcio.Clocks)
 {
-    var frequency = vcio.ReadFrequency(clock, measured: true);
-    if (Double.IsNaN(frequency))
-    {
-        frequency = vcio.ReadFrequency(clock, measured: false);
-    }
-
-    if (!Double.IsNaN(frequency))
-    {
-        Console.WriteLine($"frequency[{clock.ToString().ToLowerInvariant()}]={frequency:0}");
-    }
+    Console.WriteLine($"frequency[{clock.Type.ToString().ToLowerInvariant()}]={clock.Frequency:0}");
 }
 
 // Voltage
-foreach (var voltage in Enum.GetValues<VoltageType>())
+foreach (var voltage in vcio.Voltages)
 {
-    var volt = vcio.ReadVoltage(voltage);
-    if (!Double.IsNaN(volt))
-    {
-        Console.WriteLine($"volt[{voltage.ToString().ToLowerInvariant()}]={volt:0.0000}V");
-    }
+    Console.WriteLine($"volt[{voltage.Type.ToString().ToLowerInvariant()}]={voltage.Voltage:0.0000}V");
 }
 
 // Throttled
-var throttled = vcio.ReadThrottled();
-if (throttled != ThrottledFlags.Unknown)
+if (vcio.Throttled != ThrottledFlags.Unknown)
 {
-    Console.WriteLine($"throttled={throttled}");
+    Console.WriteLine($"throttled={vcio.Throttled}");
 }
 ```
 
@@ -60,12 +44,11 @@ if (throttled != ThrottledFlags.Unknown)
 ## GPIO
 
 ```csharp
-using var gpio = new GpioMap();
-gpio.Open();
+using var gpio = PlatformProvider.GetGpioMonitor();
 
 Console.WriteLine("PHYS  SOC  FUNC  LEVEL");
 Console.WriteLine("----  ---  ----  -----");
-foreach (var p in gpio.ReadHeaderGpioPins().OrderBy(x => x.PhysicalPin))
+foreach (var p in gpio.Pins)
 {
     Console.WriteLine($"{p.PhysicalPin,4}  {p.SocPin,3}  {p.Function,-4}  {p.Level,5}");
 }

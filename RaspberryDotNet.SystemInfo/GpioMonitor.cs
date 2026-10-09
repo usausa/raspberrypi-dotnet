@@ -3,7 +3,24 @@ namespace RaspberryDotNet.SystemInfo;
 
 using static RaspberryDotNet.SystemInfo.NativeMethods;
 
-public sealed class GpioMap : IDisposable
+public sealed class GpioPin
+{
+    public int PhysicalPin { get; }
+
+    public int SocPin { get; }
+
+    public GpioFunction Function { get; internal set; } = GpioFunction.Unknown;
+
+    public int Level { get; internal set; }
+
+    internal GpioPin(int physicalPin, int socPin)
+    {
+        PhysicalPin = physicalPin;
+        SocPin = socPin;
+    }
+}
+
+public sealed class GpioMonitor : IDisposable
 {
     // BCM2835-2711 (Pi 4 and earlier)
     private const string DevicePathBcm = "/dev/gpiomem";
@@ -19,66 +36,72 @@ public sealed class GpioMap : IDisposable
     private const int Rp1StatusInFromPadBit = 17; // STATUS.INFROMPAD: input level at the pad
     private const int Rp1StatusOeToPadBit = 13;   // STATUS.OETOPAD: output enable to the pad
 
-    private IntPtr map = IntPtr.Zero;
-    private bool isRp1;
+    private readonly bool isRp1;
 
-    public bool IsOpen => map != IntPtr.Zero;
+    private readonly GpioPin[] pins;
 
-    public static bool IsSupported() => File.Exists(DevicePathRp1) || File.Exists(DevicePathBcm);
+    private IntPtr map;
+
+    private bool disposed;
+
+    public bool Supported { get; }
+
+    public DateTime UpdateAt { get; private set; }
+
+    public IReadOnlyList<GpioPin> Pins => pins;
 
     //------------------------------------------------------------------------
-    // Open/Close
+    // Constructor
     //------------------------------------------------------------------------
+
+    private GpioMonitor(IntPtr map, bool isRp1)
+    {
+        this.map = map;
+        this.isRp1 = isRp1;
+        Supported = map != IntPtr.Zero;
+        pins = Supported ? Array.ConvertAll(HeaderGpioPorts, static x => new GpioPin(x.PhysicalPin, x.SocPin)) : [];
+    }
+
+    internal static GpioMonitor Create()
+    {
+        var isRp1 = IsRp1Model();
+        var map = MapDevice(isRp1 ? DevicePathRp1 : DevicePathBcm);
+        var instance = new GpioMonitor(map, isRp1);
+        instance.Update();
+        return instance;
+    }
 
     public void Dispose()
     {
-        Close();
-    }
-
-    public bool Open()
-    {
-        if (IsOpen)
-        {
-            return true;
-        }
-
-        isRp1 = IsRp1Model();
-        var devicePath = isRp1 ? DevicePathRp1 : DevicePathBcm;
-
-        var fd = open(devicePath, O_RDONLY);
-        if (fd >= 0)
-        {
-            try
-            {
-                map = mmap(IntPtr.Zero, GpioBlockSize, PROT_READ, MAP_SHARED, fd, IntPtr.Zero);
-                if (map == MAP_FAILED)
-                {
-                    map = IntPtr.Zero;
-                }
-            }
-            finally
-            {
-                _ = close(fd);
-            }
-        }
-
-        return IsOpen;
-    }
-
-    public void Close()
-    {
-        if (!IsOpen)
+        if (disposed)
         {
             return;
         }
 
-        try
+        disposed = true;
+        if (map != IntPtr.Zero)
         {
             _ = munmap(map, GpioBlockSize);
+            map = IntPtr.Zero;
+        }
+    }
+
+    private static IntPtr MapDevice(string devicePath)
+    {
+        var fd = open(devicePath, O_RDONLY);
+        if (fd < 0)
+        {
+            return IntPtr.Zero;
+        }
+
+        try
+        {
+            var map = mmap(IntPtr.Zero, GpioBlockSize, PROT_READ, MAP_SHARED, fd, IntPtr.Zero);
+            return map == MAP_FAILED ? IntPtr.Zero : map;
         }
         finally
         {
-            map = IntPtr.Zero;
+            _ = close(fd);
         }
     }
 
@@ -111,49 +134,30 @@ public sealed class GpioMap : IDisposable
     }
 
     //------------------------------------------------------------------------
-    // Read states
+    // Update
     //------------------------------------------------------------------------
 
     // ReSharper disable once RedundantUnsafeContext
-    public unsafe IReadOnlyList<GpioSocPinState> ReadSocBanks(int start = 0, int end = 27)
+    public unsafe bool Update()
     {
-        if (!IsOpen)
-        {
-            throw new InvalidOperationException("GPIO map is not open.");
-        }
+        ObjectDisposedException.ThrowIf(disposed, this);
 
-        var list = new List<GpioSocPinState>(end - start + 1);
+        if (map == IntPtr.Zero)
+        {
+            return false;
+        }
 
         var basePtr = (byte*)map.ToPointer();
-        for (var soc = start; soc <= end; soc++)
+        foreach (var pin in pins)
         {
-            var (func, level) = ReadPin(basePtr, (uint)soc);
-
-            list.Add(new GpioSocPinState(soc, func, level));
+            var (function, level) = ReadPin(basePtr, (uint)pin.SocPin);
+            pin.Function = function;
+            pin.Level = level;
         }
 
-        return list;
-    }
+        UpdateAt = DateTime.Now;
 
-    // ReSharper disable once RedundantUnsafeContext
-    public unsafe IReadOnlyList<GpioHeaderPinState> ReadHeaderGpioPins()
-    {
-        if (!IsOpen)
-        {
-            throw new InvalidOperationException("GPIO map is not open.");
-        }
-
-        var list = new List<GpioHeaderPinState>(HeaderGpioPorts.Length);
-
-        var basePtr = (byte*)map.ToPointer();
-        foreach (var port in HeaderGpioPorts)
-        {
-            var (func, level) = ReadPin(basePtr, (uint)port.SocPin);
-
-            list.Add(new GpioHeaderPinState(port.PhysicalPin, port.SocPin, func, level));
-        }
-
-        return list;
+        return true;
     }
 
     // ReSharper disable once RedundantUnsafeContext
