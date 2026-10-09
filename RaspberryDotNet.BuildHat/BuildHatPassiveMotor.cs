@@ -16,8 +16,6 @@ public sealed class BuildHatPassiveMotor
 
     public void SetPower(double power)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(power, -1);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(power, 1);
         controller.WritePassiveMotor(Port.Index, String.Create(CultureInfo.InvariantCulture, $"pwm ; set {power:0.###}"));
     }
 

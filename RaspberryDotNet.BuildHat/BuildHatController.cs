@@ -29,8 +29,6 @@ public sealed class BuildHatController : IDisposable
 
     private const string PositionPid = "0 1 s4 0.0027777778 0 5 0 .1 3 0.01";
 
-    private const int MaxSpeed = 100;
-
     private const int MaxCommandLength = 250;
 
     private const double MinimumRampSeconds = 0.05;
@@ -256,8 +254,6 @@ public sealed class BuildHatController : IDisposable
 
     public void SendCommand(string command)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(command);
-
         lock (sync)
         {
             RequireOpen();
@@ -267,8 +263,6 @@ public sealed class BuildHatController : IDisposable
 
     public async Task<BuildHatDeviceType> WaitForDeviceAsync(int port, TimeSpan timeout, CancellationToken token = default)
     {
-        ValidatePort(port);
-
         var source = new TaskCompletionSource<BuildHatDeviceType>(TaskCreationOptions.RunContinuationsAsynchronously);
         void OnPortChanged(object? sender, BuildHatPortEventArgs e)
         {
@@ -296,14 +290,11 @@ public sealed class BuildHatController : IDisposable
 
     public BuildHatMotor GetMotor(int port)
     {
-        ValidatePort(port);
         return new BuildHatMotor(this, Ports[port]);
     }
 
     public BuildHatMotorPair GetMotorPair(int left, int right)
     {
-        ValidatePort(left);
-        ValidatePort(right);
         if (left == right)
         {
             throw new ArgumentException("Left and right must be different ports.", nameof(right));
@@ -314,55 +305,46 @@ public sealed class BuildHatController : IDisposable
 
     public BuildHatPassiveMotor GetPassiveMotor(int port)
     {
-        ValidatePort(port);
         return new BuildHatPassiveMotor(this, Ports[port]);
     }
 
     public BuildHatLight GetLight(int port)
     {
-        ValidatePort(port);
         return new BuildHatLight(this, Ports[port]);
     }
 
     public BuildHatColorDistanceSensor GetColorDistanceSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatColorDistanceSensor(this, Ports[port]);
     }
 
     public BuildHatColorSensor GetColorSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatColorSensor(this, Ports[port]);
     }
 
     public BuildHatDistanceSensor GetDistanceSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatDistanceSensor(this, Ports[port]);
     }
 
     public BuildHatForceSensor GetForceSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatForceSensor(this, Ports[port]);
     }
 
     public BuildHatLightMatrix GetLightMatrix(int port)
     {
-        ValidatePort(port);
         return new BuildHatLightMatrix(this, Ports[port]);
     }
 
     public BuildHatTiltSensor GetTiltSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatTiltSensor(this, Ports[port]);
     }
 
     public BuildHatMotionSensor GetMotionSensor(int port)
     {
-        ValidatePort(port);
         return new BuildHatMotionSensor(this, Ports[port]);
     }
 
@@ -381,8 +363,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SelectMode(int index, int mode)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(mode);
-
         lock (sync)
         {
             var state = RequireDataDevice(index);
@@ -398,7 +378,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SelectCombi(int index, int[] modes)
     {
-        ArgumentNullException.ThrowIfNull(modes);
         if (modes.Length == 0)
         {
             throw new ArgumentException("Modes are empty.", nameof(modes));
@@ -407,7 +386,6 @@ public sealed class BuildHatController : IDisposable
         var builder = new StringBuilder();
         foreach (var mode in modes)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(mode, nameof(modes));
             builder.Append(CultureInfo.InvariantCulture, $" {mode} 0");
         }
 
@@ -439,8 +417,6 @@ public sealed class BuildHatController : IDisposable
 
     internal async Task<IReadOnlyList<double>> ReadOnceAsync(int index, int mode, CancellationToken token)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(mode);
-
         ReadRequest request;
         lock (sync)
         {
@@ -489,7 +465,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void WriteModeData(int index, int mode, ReadOnlySpan<byte> data)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(mode);
         var write = WriteFragment(data);
 
         lock (sync)
@@ -528,8 +503,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SetPowerLimit(int index, double limit)
     {
-        ValidateRatio(limit, nameof(limit));
-
         lock (sync)
         {
             var state = states[index];
@@ -613,8 +586,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SetSpeed(int index, int speed)
     {
-        ValidateSpeed(speed, nameof(speed));
-
         lock (sync)
         {
             var state = RequireMotor(index);
@@ -624,9 +595,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SetPower(int index, double power)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(power, -1);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(power, 1);
-
         lock (sync)
         {
             var state = RequireMotor(index);
@@ -636,8 +604,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void MoveTo(int index, int position, int speed)
     {
-        ValidatePositiveSpeed(speed, nameof(speed));
-
         lock (sync)
         {
             var state = RequireMotor(index);
@@ -683,9 +649,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SetPwmParameters(int index, double threshold, double minimum)
     {
-        ValidateRatio(threshold, nameof(threshold));
-        ValidateRatio(minimum, nameof(minimum));
-
         lock (sync)
         {
             var state = states[index];
@@ -700,9 +663,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunForSecondsAsync(int index, double seconds, int speed, BuildHatStopMode stop, CancellationToken token)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(seconds);
-        ValidateSpeed(speed, nameof(speed));
-
         PendingOperation operation;
         lock (sync)
         {
@@ -716,8 +676,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunForDegreesAsync(int index, int degrees, int speed, BuildHatStopMode stop, CancellationToken token)
     {
-        ValidateMovingSpeed(speed, nameof(speed));
-
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -733,8 +691,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunToPositionAsync(int index, int position, int speed, BuildHatStopMode stop, CancellationToken token)
     {
-        ValidatePositiveSpeed(speed, nameof(speed));
-
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -749,10 +705,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunToAbsolutePositionAsync(int index, int degrees, int speed, BuildHatDirection direction, BuildHatStopMode stop, CancellationToken token)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(degrees, -180);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(degrees, 180);
-        ValidatePositiveSpeed(speed, nameof(speed));
-
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -777,9 +729,6 @@ public sealed class BuildHatController : IDisposable
 
     internal void SetPairSpeed(int left, int leftSpeed, int right, int rightSpeed)
     {
-        ValidateSpeed(leftSpeed, nameof(leftSpeed));
-        ValidateSpeed(rightSpeed, nameof(rightSpeed));
-
         lock (sync)
         {
             var leftState = RequireMotor(left);
@@ -810,10 +759,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunPairForSecondsAsync(int left, int leftSpeed, int right, int rightSpeed, double seconds, BuildHatStopMode stop, CancellationToken token)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(seconds);
-        ValidateSpeed(leftSpeed, nameof(leftSpeed));
-        ValidateSpeed(rightSpeed, nameof(rightSpeed));
-
         PendingOperation[] operations;
         lock (sync)
         {
@@ -828,9 +773,6 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunPairForDegreesAsync(int left, int leftSpeed, int right, int rightSpeed, int degrees, BuildHatStopMode stop, CancellationToken token)
     {
-        ValidateMovingSpeed(leftSpeed, nameof(leftSpeed));
-        ValidateMovingSpeed(rightSpeed, nameof(rightSpeed));
-
         PendingOperation[] operations;
         double seconds;
         lock (sync)
@@ -1395,36 +1337,6 @@ public sealed class BuildHatController : IDisposable
         new(type is null
             ? String.Create(CultureInfo.InvariantCulture, $"Port {(char)('A' + index)}: No device is connected.")
             : String.Create(CultureInfo.InvariantCulture, $"Port {(char)('A' + index)}: {type.Name} {reason}. support=[{type.Support}]"));
-
-    private static void ValidatePort(int port)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(port);
-        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(port, PortCount);
-    }
-
-    private static void ValidateSpeed(int speed, string name)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThan(speed, -MaxSpeed, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(speed, MaxSpeed, name);
-    }
-
-    private static void ValidateMovingSpeed(int speed, string name)
-    {
-        ValidateSpeed(speed, name);
-        ArgumentOutOfRangeException.ThrowIfZero(speed, name);
-    }
-
-    private static void ValidatePositiveSpeed(int speed, string name)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThan(speed, 1, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(speed, MaxSpeed, name);
-    }
-
-    private static void ValidateRatio(double value, string name)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThan(value, 0, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 1, name);
-    }
 
     private static int GetDelta(int current, int target, BuildHatDirection direction)
     {

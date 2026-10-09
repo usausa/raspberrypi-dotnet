@@ -8,8 +8,6 @@ public sealed class BuildHatDistanceSensor
 
     private const byte EyesHeader = 0xC5;
 
-    private const int MaxBrightness = 100;
-
     private readonly BuildHatController controller;
 
     public BuildHatPort Port { get; }
@@ -34,11 +32,6 @@ public sealed class BuildHatDistanceSensor
 
     public void SetEyes(int rightUpper, int leftUpper, int rightLower, int leftLower)
     {
-        ValidateBrightness(rightUpper, nameof(rightUpper));
-        ValidateBrightness(leftUpper, nameof(leftUpper));
-        ValidateBrightness(rightLower, nameof(rightLower));
-        ValidateBrightness(leftLower, nameof(leftLower));
-
         controller.PrepareDistanceSensor(Port.Index);
         Port.Write([EyesHeader, (byte)rightUpper, (byte)leftUpper, (byte)rightLower, (byte)leftLower]);
     }
@@ -50,10 +43,4 @@ public sealed class BuildHatDistanceSensor
     }
 
     public void Deselect() => Port.Deselect();
-
-    private static void ValidateBrightness(int value, string name)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(value, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(value, MaxBrightness, name);
-    }
 }

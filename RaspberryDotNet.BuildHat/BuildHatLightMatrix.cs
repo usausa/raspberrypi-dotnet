@@ -18,10 +18,6 @@ public sealed class BuildHatLightMatrix
 
     private const byte TransitionHeader = 0xC3;
 
-    private const int MaxLevel = 9;
-
-    private const int MaxBrightness = 10;
-
     private readonly BuildHatController controller;
 
     public BuildHatPort Port { get; }
@@ -43,7 +39,7 @@ public sealed class BuildHatLightMatrix
         data[0] = PixelHeader;
         for (var i = 0; i < PixelCount; i++)
         {
-            data[i + 1] = ToByte(pixels[i], nameof(pixels));
+            data[i + 1] = ToByte(pixels[i]);
         }
 
         Write(PixelMode, data);
@@ -53,7 +49,7 @@ public sealed class BuildHatLightMatrix
     {
         Span<byte> data = stackalloc byte[PixelCount + 1];
         data[0] = PixelHeader;
-        data[1..].Fill(ToByte(pixel, nameof(pixel)));
+        data[1..].Fill(ToByte(pixel));
         Write(PixelMode, data);
     }
 
@@ -61,15 +57,11 @@ public sealed class BuildHatLightMatrix
 
     public void SetLevel(int level)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(level);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(level, MaxLevel);
         Write(LevelMode, [LevelHeader, (byte)level]);
     }
 
     public void SetTransition(BuildHatMatrixTransition transition)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative((int)transition, nameof(transition));
-        ArgumentOutOfRangeException.ThrowIfGreaterThan((int)transition, (int)BuildHatMatrixTransition.Fade, nameof(transition));
         Write(TransitionMode, [TransitionHeader, (byte)transition]);
     }
 
@@ -79,12 +71,8 @@ public sealed class BuildHatLightMatrix
         controller.WriteModeData(Port.Index, mode, data);
     }
 
-    private static byte ToByte(BuildHatMatrixPixel pixel, string name)
+    private static byte ToByte(BuildHatMatrixPixel pixel)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative((int)pixel.Color, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan((int)pixel.Color, (int)BuildHatMatrixColor.White, name);
-        ArgumentOutOfRangeException.ThrowIfNegative(pixel.Brightness, name);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(pixel.Brightness, MaxBrightness, name);
         return (byte)((pixel.Brightness << 4) | (int)pixel.Color);
     }
 }

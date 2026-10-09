@@ -18,8 +18,6 @@ public sealed class BuildHatLight
 
     public void SetBrightness(int brightness)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(brightness);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(brightness, MaxBrightness);
         if (brightness == 0)
         {
             Off();
