@@ -604,6 +604,11 @@ public sealed class BuildHatController : IDisposable
 
     internal void MoveTo(int index, int position, int speed)
     {
+        if (speed <= 0)
+        {
+            return;
+        }
+
         lock (sync)
         {
             var state = RequireMotor(index);
@@ -663,6 +668,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunForSecondsAsync(int index, double seconds, int speed, BuildHatStopMode stop, CancellationToken token)
     {
+        if (seconds < 0)
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation operation;
         lock (sync)
         {
@@ -676,6 +686,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunForDegreesAsync(int index, int degrees, int speed, BuildHatStopMode stop, CancellationToken token)
     {
+        if (speed == 0)
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -691,6 +706,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunToPositionAsync(int index, int position, int speed, BuildHatStopMode stop, CancellationToken token)
     {
+        if (speed <= 0)
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -705,6 +725,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunToAbsolutePositionAsync(int index, int degrees, int speed, BuildHatDirection direction, BuildHatStopMode stop, CancellationToken token)
     {
+        if (speed <= 0)
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation operation;
         double seconds;
         lock (sync)
@@ -759,6 +784,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunPairForSecondsAsync(int left, int leftSpeed, int right, int rightSpeed, double seconds, BuildHatStopMode stop, CancellationToken token)
     {
+        if (seconds < 0)
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation[] operations;
         lock (sync)
         {
@@ -773,6 +803,11 @@ public sealed class BuildHatController : IDisposable
 
     internal Task RunPairForDegreesAsync(int left, int leftSpeed, int right, int rightSpeed, int degrees, BuildHatStopMode stop, CancellationToken token)
     {
+        if ((leftSpeed == 0) || (rightSpeed == 0))
+        {
+            return Task.CompletedTask;
+        }
+
         PendingOperation[] operations;
         double seconds;
         lock (sync)
