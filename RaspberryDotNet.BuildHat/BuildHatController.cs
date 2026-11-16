@@ -49,11 +49,7 @@ public sealed class BuildHatController : IDisposable
 
     public event EventHandler<ErrorEventArgs>? ConnectionLost;
 
-#if NET9_0_OR_GREATER
     private readonly Lock sync = new();
-#else
-    private readonly object sync = new();
-#endif
 
     private readonly BuildHatOptions options;
 
@@ -971,7 +967,11 @@ public sealed class BuildHatController : IDisposable
 
     private void ProcessData(int index, string line)
     {
+#if NET11_0_OR_GREATER
+        var colon = line.IndexOf(':', 3, StringComparison.Ordinal);
+#else
         var colon = line.IndexOf(':', 3);
+#endif
         if ((colon < 0) || !Int32.TryParse(line.AsSpan(3, colon - 3), NumberStyles.None, CultureInfo.InvariantCulture, out var number))
         {
             return;

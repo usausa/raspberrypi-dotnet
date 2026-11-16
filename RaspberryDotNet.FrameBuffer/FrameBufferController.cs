@@ -134,8 +134,12 @@ public sealed class FrameBufferController : IDisposable
         stream = null;
     }
 
+#if NET11_0_OR_GREATER
+    public void Update(bool flush = true)
+#else
     // ReSharper disable once RedundantUnsafeContext
     public unsafe void Update(bool flush = true)
+#endif
     {
         if (map != IntPtr.Zero)
         {
